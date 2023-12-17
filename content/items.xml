@@ -1,3 +1,4 @@
 <items gfxroot="gfx/items/" version="1">
-	<passive cache="flying" name="the Rooster Talisman" description="if pig flys!" tags="" gfx="Collectibles_the Rooster Talisman.png" quality="3"/>
+	<passive cache="flying" name="the Rooster Talisman" description="When Pigs Fly!" tags="" gfx="Collectibles_the Rooster Talisman.png" quality="3"/>
+	<passive cache="damage" name="the Ox Talisman" description="Never take off his mask!" tags="" gfx="Collectibles_the Ox Talisman.png" quality="3"/>
 </items>
