@@ -1,0 +1,3 @@
+<items gfxroot="gfx/items/" version="1">
+	<passive cache="" name="the Rooster Talisman" description="if pig flys!" tags="" gfx="Collectibles_the Rooster Talisman.png"  id="1" quality="3" />
+</items>
