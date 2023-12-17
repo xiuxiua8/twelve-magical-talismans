@@ -5,17 +5,20 @@ local game = Game()
 
 local TalismanId = {
     ROOSTER = Isaac.GetItemIdByName("the Rooster Talisman"),
-    OX = Isaac.GetItemIdByName("the Ox Talisman")
+    OX = Isaac.GetItemIdByName("the Ox Talisman"),
+    RABBIT = Isaac.GetItemIdByName("the Rabbit Talisman")
 }
 
 local HasTalisman = {
     ROOSTER = false,
-    OX = false
+    OX = false,
+    RABBIT = false
 }
 
 local Bonus = {
     ROOSTER = true,
-    OX = 5
+    OX = 5,
+    RABBIT = 0.5
 }
 
 
@@ -61,6 +64,7 @@ end
 local function UpdateTalismans(player) 
     HasTalisman.ROOSTER = player:HasCollectible(TalismanId.ROOSTER)
     HasTalisman.OX = player:HasCollectible(TalismanId.OX)
+    HasTalisman.RABBIT = player:HasCollectible(TalismanId.RABBIT)
 end
 
 
@@ -80,6 +84,7 @@ function Talismans:onUpdate(player)
         Isaac.DebugString("Rooster Talisman ID: " .. tostring(TalismanId.ROOSTER))
         Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.ROOSTER, Vector(320,300), Vector(0,0), nil)
         Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.OX, Vector(270,300), Vector(0,0), nil)
+        Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.RABBIT, Vector(370,300), Vector(0,0), nil)
         if player:GetName() == "Isaac" then
             player:AddCollectible(TalismanId.OX, 0, true)
         end 
@@ -101,6 +106,11 @@ function Talismans:onCache(player,cacheFlag)
     if cacheFlag == CacheFlag.CACHE_FLYING then
         if player:HasCollectible(TalismanId.ROOSTER) then 
             player.CanFly = Bonus.ROOSTER
+        end
+    end
+    if cacheFlag == CacheFlag.CACHE_SPEED then 
+        if player:HasCollectible(TalismanId.RABBIT)  then 
+            player.MoveSpeed = player.MoveSpeed + Bonus.RABBIT
         end
     end
 end
