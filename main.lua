@@ -1,14 +1,26 @@
 local Talismans = RegisterMod("Talismans", 1)
 
-Talismans.COLLECTIBLE_ROOSTER_TALISMAN = Isaac.GetItemIdByName("the Rooster Talisman")
+--Talismans.COLLECTIBLE_ROOSTER_TALISMAN = Isaac.GetItemIdByName("the Rooster Talisman")
+
+local TalismanId = {
+    ROOSTER = Isaac.GetItemIdByName("the Rooster Talisman")
+}
+
+local HasTalisman = {
+    ROOSTER = false
+}
 
 function Talismans:RoosteronUpdate()
+    if Isaac.HasModData(Talismans) then
+        Isaac.DebugString("Mod data exists for Talismans mod.")
+    else
+        Isaac.DebugString("Mod data does not exist for Talismans mod.")
+    end
+    
     -- Begining of run initializations
     if Game():GetFrameCount() == 1 then
-        Talismans.HasRoosterTalisman = false
-        --Isaac.DebugString("Rooster Talisman ID: " .. tostring(Talismans.COLLECTIBLE_ROOSTER_TALISMAN))
-        --Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTBLE, Talismans.COLLECTIBLE_ROOSTER_TALISMAN, Vector(320,300), Vector(0,0), nil)
-        Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, Talismans.COLLECTIBLE_ROOSTER_TALISMAN, Vector(320,300), Vector(0,0), nil)
+        Isaac.DebugString("Rooster Talisman ID: " .. tostring(TalismanId.ROOSTER))
+        Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.ROOSTER, Vector(320,300), Vector(0,0), nil)
     end
         
     -- Rooster Talismans functionality
@@ -16,12 +28,12 @@ function Talismans:RoosteronUpdate()
     --for 1, player in ipairs(Isaac.GetPlayers()) do
     for playerNum = 1, 1 do
         local player = Game():GetPlayer(playerNum) 
-        if player:HasCollectible(Talismans.COLLECTIBLE_ROOSTER_TALISMAN) then
-            if not Talismans.HasRoosterTalisman then 
+        if player:HasCollectible(TalismanId.ROOSTER) then
+            if not HasTalisman.ROOSTER then 
                 player:AddSoulHearts(2)
-                Talismans.HasRoosterTalisman = true
+                HasTalisman.ROOSTER = true
             end
-            --player:TryRemoveCollectible(Talismans.COLLECTIBLE_ROOSTER_TALISMAN)  -- 移除Rooster Talisman
+            --player:TryRemoveCollectible(TalismanId.ROOSTER)  -- 移除Rooster Talisman
             --player:AddFlight(EntityRef(player), 180)  -- 让玩家飞起来，持续时间为180帧
             for i, entity in pairs(Isaac.GetRoomEntities()) do
                 if entity:IsVulnerableEnemy() and math.random(500) <= 7 then
