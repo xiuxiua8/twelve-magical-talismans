@@ -18,11 +18,6 @@ local Bonus = {
     OX = 5
 }
 
---Update the inventory
-local function UpdateTalismans(player) 
-    HasTalisman.ROOSTER = player:HasCollectible(TalismanId.ROOSTER)
-    HasTalisman.OX = player:HasCollectible(TalismanId.OX)
-end
 
 function Talismans:RoosteronUpdate()
     if Isaac.HasModData(Talismans) then
@@ -57,32 +52,57 @@ function Talismans:RoosteronUpdate()
         end
     end
 end
+-- 将函数注册为MC_POST_UPDATE回调，这样它将在每一帧结束后被调用
+--Talismans:AddCallback(ModCallbacks.MC_POST_UPDATE, Talismans.RoosteronUpdate)
+
+
+
+--Update the inventory
+local function UpdateTalismans(player) 
+    HasTalisman.ROOSTER = player:HasCollectible(TalismanId.ROOSTER)
+    HasTalisman.OX = player:HasCollectible(TalismanId.OX)
+end
+
+
+
 --when the run starts or continues
 function Talismans:onPlayerInit(player)
-    --UpdateTalismans(player)
+    UpdateTalismans(player)
 end
+Talismans:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, Talismans.onPlayerInit)
+
+
 
 --when passive effects should update
 function Talismans:onUpdate(player)
-    --UpdateTalismans(player)
+    -- Begining of run initializations
+    if game:GetFrameCount() == 1 then
+        Isaac.DebugString("Rooster Talisman ID: " .. tostring(TalismanId.ROOSTER))
+        Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.ROOSTER, Vector(320,300), Vector(0,0), nil)
+        Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.OX, Vector(270,300), Vector(0,0), nil)
+        if player:GetName() == "Isaac" then
+            player:AddCollectible(TalismanId.OX, 0, true)
+        end 
+    end
+    UpdateTalismans(player)
 end
+
+Talismans:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, Talismans.onUpdate)
+
+
 
 --When we update the cache
 function Talismans:onCache(player,cacheFlag)
     if cacheFlag == CacheFlag.CACHE_DAMAGE then 
-        if player:HasCollectible(TalismanId.OX) and not HasTalisman.OX then 
+        if player:HasCollectible(TalismanId.OX)  then 
             player.Damage = player.Damage + Bonus.OX
         end
     end
-    if cacheFlag == CacheFlag.CACHE_FlYING then 
-        if player:HasCollectible(TalismanId.ROOSTER) and not HasTalisman.ROOSTER then 
+    if cacheFlag == CacheFlag.CACHE_FLYING then
+        if player:HasCollectible(TalismanId.ROOSTER) then 
             player.CanFly = Bonus.ROOSTER
         end
     end
 end
 
--- 将函数注册为MC_POST_UPDATE回调，这样它将在每一帧结束后被调用
-Talismans:AddCallback(ModCallbacks.MC_POST_UPDATE, Talismans.RoosteronUpdate)
-Talismans:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, Talismans.onPlayerInit)
-Talismans:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, Talismans.onUpdate)
 Talismans:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, Talismans.onCache)
