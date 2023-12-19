@@ -1,0 +1,16 @@
+<ItemPools>
+	<Pool Name="devil">
+		<Item Name="the Rooster Talisman" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+    </Pool>
+
+    <Pool Name="boss"> 
+        <Item Name="the Rabbit Talisman" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool> 
+
+    <Pool Name="treasure"> 
+        <Item Name="the Ox Talisman" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool> 
+</ItemPools>
+
+
+<!-- 注释 -->
