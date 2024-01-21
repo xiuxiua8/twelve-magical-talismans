@@ -6,13 +6,15 @@ local game = Game()
 local TalismanId = {
     ROOSTER = Isaac.GetItemIdByName("the Rooster Talisman"),
     OX = Isaac.GetItemIdByName("the Ox Talisman"),
-    RABBIT = Isaac.GetItemIdByName("the Rabbit Talisman")
+    RABBIT = Isaac.GetItemIdByName("the Rabbit Talisman"),
+    SNACK = Isaac.GetItemIdByName("the Snack Talisman")
 }
 
 local HasTalisman = {
     ROOSTER = false,
     OX = false,
-    RABBIT = false
+    RABBIT = false,
+    SNACK = false
 }
 
 local Bonus = {
@@ -66,6 +68,7 @@ local function UpdateTalismans(player)
     HasTalisman.OX = player:HasCollectible(TalismanId.OX)
     HasTalisman.RABBIT = player:HasCollectible(TalismanId.RABBIT)
 end
+
 
 
 
