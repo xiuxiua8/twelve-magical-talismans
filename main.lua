@@ -4,17 +4,19 @@ local game = Game()
 --Talismans.COLLECTIBLE_ROOSTER_TALISMAN = Isaac.GetItemIdByName("the Rooster Talisman")
 
 local TalismanId = {
-    ROOSTER = Isaac.GetItemIdByName("the Rooster Talisman"),
     OX = Isaac.GetItemIdByName("the Ox Talisman"),
     RABBIT = Isaac.GetItemIdByName("the Rabbit Talisman"),
-    SNACK = Isaac.GetItemIdByName("the Snack Talisman")
+    DRAGON = Isaac.GetItemIdByName("the Dragon Talisman"),
+    SNACK = Isaac.GetItemIdByName("the Snack Talisman"),
+    ROOSTER = Isaac.GetItemIdByName("the Rooster Talisman")
 }
 
 local HasTalisman = {
     ROOSTER = false,
     OX = false,
     RABBIT = false,
-    SNACK = false
+    SNACK = false,
+    DRAGON = false
 }
 
 local Bonus = {
@@ -23,50 +25,20 @@ local Bonus = {
     RABBIT = 0.5
 }
 
-
-function Talismans:RoosteronUpdate()
-    if Isaac.HasModData(Talismans) then
-        Isaac.DebugString("Mod data exists for Talismans mod.")
-    else
-        Isaac.DebugString("Mod data does not exist for Talismans mod.")
-    end
-    
-    -- Begining of run initializations
-    if Game():GetFrameCount() == 1 then
-        Isaac.DebugString("Rooster Talisman ID: " .. tostring(TalismanId.ROOSTER))
-        Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.ROOSTER, Vector(320,300), Vector(0,0), nil)
-        Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.OX, Vector(270,300), Vector(0,0), nil)
-    end
-        
-    -- Rooster Talismans functionality
-    --for playerNum = 1, Game():GetNumPlayer() do
-    --for 1, player in ipairs(Isaac.GetPlayers()) do
-    for playerNum = 1, 1 do
-        local player = Game():GetPlayer(playerNum) 
-        if player:HasCollectible(TalismanId.ROOSTER) then
-            if not HasTalisman.ROOSTER then 
-                player:AddSoulHearts(2)
-                HasTalisman.ROOSTER = true
-            end
-            --player.CanFly = true
-            for i, entity in pairs(Isaac.GetRoomEntities()) do
-                if entity:IsVulnerableEnemy() and math.random(500) <= 7 then
-                    entity:AddPoison(EntityRef(player), 100, 3.5)
-                end
-            end
-        end
-    end
-end
--- 将函数注册为MC_POST_UPDATE回调，这样它将在每一帧结束后被调用
---Talismans:AddCallback(ModCallbacks.MC_POST_UPDATE, Talismans.RoosteronUpdate)
-
-
+local DRAGON = {
+    DMG_MULT = 2, 
+    SCALE = 1.3,
+    BASE_CHANCE = 15,
+    MAX_LUCK = 6
+}
 
 --Update the inventory
 local function UpdateTalismans(player) 
     HasTalisman.ROOSTER = player:HasCollectible(TalismanId.ROOSTER)
     HasTalisman.OX = player:HasCollectible(TalismanId.OX)
     HasTalisman.RABBIT = player:HasCollectible(TalismanId.RABBIT)
+    HasTalisman.SNACK = player:HasCollectible(TalismanId.SNACK)
+    HasTalisman.DRAGON = player:HasCollectible(TalismanId.DRAGON)
 end
 
 
@@ -82,12 +54,19 @@ Talismans:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, Talismans.onPlayerInit)
 
 --when passive effects should update
 function Talismans:onUpdate(player)
+    if Isaac.HasModData(Talismans) then
+        Isaac.DebugString("Mod data exists for Talismans mod.")
+    else
+        Isaac.DebugString("Mod data does not exist for Talismans mod.")
+    end
     -- Begining of run initializations
     if game:GetFrameCount() == 1 then
         Isaac.DebugString("Rooster Talisman ID: " .. tostring(TalismanId.ROOSTER))
         Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.ROOSTER, Vector(320,300), Vector(0,0), nil)
         Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.OX, Vector(270,300), Vector(0,0), nil)
         Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.RABBIT, Vector(370,300), Vector(0,0), nil)
+        Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.SNACK, Vector(220,300), Vector(0,0), nil)
+        Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, TalismanId.DRAGON, Vector(420,300), Vector(0,0), nil)
         if player:GetName() == "Isaac" then
             player:AddCollectible(TalismanId.OX, 0, true)
         end 
@@ -119,3 +98,55 @@ function Talismans:onCache(player,cacheFlag)
 end
 
 Talismans:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, Talismans.onCache)
+
+
+--when passive effects should update
+function Talismans:DragononUpdate(player)
+    if player:HasCollectible(TalismanId.DRAGON) then 
+        for _, entity in pairs(Isaac.GetRoomEntities()) do 
+            if entity.Type == EntityType.ENTITY_TEAR then 
+                local TearData = entity:GetData()
+                local Tear = entity:ToTear()
+                if TearData.DragonType == nil then
+                    --Initialize tear
+                    local roll = math.random(100)
+                    
+                    if roll <= ((100 - DRAGON.BASE_CHANCE) * player.Luck / DRAGON.MAX_LUCK) + DRAGON.BASE_CHANCE then
+                        --DRAGON tear
+                        TearData.DragonType = math.random(3)
+                        if TearData.DragonType == 1 then
+                            -- Death's touch
+                            Tear:ChangeVariant(TearVariant.FIST)
+                            Tear.TearFlags = TearFlags.TEAR_LASER
+                            Tear.CollisionDamage = Tear.CollisionDamage * DRAGON.DMG_MULT
+                            Tear:SetSize(Tear.Size * DRAGON.SCALE, Vector(1,1), 8)
+                            Tear.SpriteScale = Tear.SpriteScale * DRAGON.SCALE
+                        elseif TearData.DragonType == 2 then
+                            -- Holy Light
+                            Tear.TearFlags = TearFlags.TEAR_LIGHT_FROM_HEAVEN
+                        elseif TearData.DragonType == 3 then
+                            -- Gamorrah
+                            Tear:ChangeVariant(TearVariant.NAIL)
+                        end
+                    else
+                        -- Normal Tear
+                        TearData.DragonType = 0
+                    end
+                else
+                    if TearData.DragonType == 3 and Tear:CollidesWithGrid() then 
+                        local room = game:GetRoom()
+                        local Grid = room:GetGridEntityFromPos(Tear.Position)
+                        if Grid ~= nil then
+                            Grid:Destroy(false)
+                        else 
+                            Isaac.DebugString("Invalid Grid Entity to destroy!")
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+Talismans:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, Talismans.DragononUpdate)
+

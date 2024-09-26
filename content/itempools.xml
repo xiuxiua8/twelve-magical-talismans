@@ -1,16 +1,49 @@
 <ItemPools>
-	<Pool Name="devil">
-		<Item Name="the Rooster Talisman" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
-    </Pool>
-
+	<Pool Name="treasure">
+		<Item Name="the Ox Talisman" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="the Dragon Talisman" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="the Snake Talisman" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+	</Pool>
+	<Pool Name="shop">
+	</Pool>
     <Pool Name="boss"> 
         <Item Name="the Rabbit Talisman" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool> 
-
-    <Pool Name="treasure"> 
-        <Item Name="the Ox Talisman" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-    </Pool> 
+	<Pool Name="devil">
+        <Item Name="the Rooster Talisman" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+	</Pool>
+	<Pool Name="curse">
+	</Pool>
+	<Pool Name="angel">
+	</Pool>
+	<Pool Name="secret">
+	</Pool>
+	<Pool Name="ultraSecret">
+	</Pool>
+	<Pool Name="library">
+	</Pool>
+	<Pool Name="goldenChest">
+	</Pool>
+	<Pool Name="greedTreasure">
+	</Pool>
+	<Pool Name="greedShop">
+	</Pool>
+	<Pool Name="greedDevil">
+	</Pool>
+	<Pool Name="greedAngel">
+    </Pool>
+	<Pool Name="greedSecret">
+	</Pool>
+	<Pool Name="craneGame">
+	</Pool>
+	<Pool Name="bombBum">
+	</Pool>
+	<Pool Name="woodenChest">
+	</Pool>
+	<Pool Name="babyShop">
+	</Pool>
+	<Pool Name="rottenBeggar">
+	</Pool>
 </ItemPools>
-
 
 <!-- 注释 -->
