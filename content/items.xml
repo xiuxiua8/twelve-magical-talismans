@@ -1,10 +1,17 @@
 <items gfxroot="gfx/items/" version="1">
 	<!-- Passive Items -->
-	<passive cache="flying" name="the Rooster Talisman" description="When Pigs Fly!" tags="" gfx="Collectibles_the Rooster Talisman.png" quality="3"/>
-	<passive cache="damage" name="the Ox Talisman" description="Never take off his mask!" tags="" gfx="Collectibles_the Ox Talisman.png" quality="3"/>
-	<passive cache="speed" name="the Rabbit Talisman" description="Rabbit run!" tags="" gfx="Collectibles_the Rabbit Talisman.png" quality="3"/>
-	<passive cache="speed" name="the Snack Talisman" description="Rabbit run!" tags="" gfx="Collectibles_the Snack Talisman.png" quality="3"/>
-	<passive cache="speed" name="the Dragon Talisman" description="loooooong!" tags="" gfx="Collectibles_the Dragon Talisman.png" quality="4"/>
+	<passive id="1" cache="damage" name="the Rat Talisman" description="bring inanimate objects to life!" tags="" gfx="Collectibles_the Rat Talisman.png" quality="3"/>
+	<passive id="2" cache="damage" name="the Ox Talisman" description="Never take off his mask!" tags="" gfx="Collectibles_the Ox Talisman.png" quality="3"/>
+	<passive id="3" cache="damage" name="the Tiger Talisman" description="split yin and yang sides into separate entities!" tags="" gfx="Collectibles_the Tiger Talisman.png" quality="3"/>
+	<passive id="4" cache="speed" name="the Rabbit Talisman" description="Rabbit run, superhuman speed!" tags="" gfx="Collectibles_the Rabbit Talisman.png" quality="3"/>
+	<passive id="5" cache="" name="the Dragon Talisman" description="loooooooooong, project dragon fire!" tags="" gfx="Collectibles_the Dragon Talisman.png" quality="4"/>
+	<passive id="6" cache="" name="the Snake Talisman" description="turn invisible!" tags="" gfx="Collectibles_the Snake Talisman.png" quality="3"/>
+	<passive id="7" cache="damage" name="the Horse Talisman" description="heal any affliction and injuries received!" tags="" gfx="Collectibles_the Horse Talisman.png" quality="3"/>
+	<passive id="8" cache="damage" name="the Sheep Talisman" description="Never take off his mask!" tags="" gfx="Collectibles_the Sheep Talisman.png" quality="3"/>
+	<passive id="9" cache="damage" name="the Monkey Talisman" description="shapeshift you or another into any creature!" tags="" gfx="Collectibles_the Monkey Talisman.png" quality="3"/>
+	<passive id="10" cache="flying" name="the Rooster Talisman" description="When Pigs Fly!" tags="" gfx="Collectibles_the Rooster Talisman.png" quality="3"/>
+	<passive id="11" cache="damage" name="the Dog Talisman" description="the power of immortality!" tags="" gfx="Collectibles_the Dog Talisman.png" quality="3"/>
+	<passive id="12" cache="damage" name="the Pig Talisman" description="heat vision power!" tags="" gfx="Collectibles_the Pig Talisman.png" quality="3"/>
 	<!-- Active Items -->
 	<!-- Trinkets -->
 </items>
