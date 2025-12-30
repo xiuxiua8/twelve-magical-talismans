@@ -8,6 +8,7 @@ include("lua.items.spawn")
 --passive
 include("lua.items.passive.DragonTalisman.main")
 include("lua.items.passive.OxTalisman.main")
+include("lua.items.passive.SnakeTalisman.main")
 
 --mod compatibility
 include("lua.mod_compat.eid.eid")

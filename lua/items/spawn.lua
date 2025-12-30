@@ -18,11 +18,6 @@ end
 
 --when passive effects should update
 function Talismans:onUpdate(player)
-    if Isaac.HasModData(Talismans) then
-        Isaac.DebugString("Mod data exists for Talismans mod.")
-    else
-        Isaac.DebugString("Mod data does not exist for Talismans mod.")
-    end
     -- Begining of run initializations
     if game:GetFrameCount() == 1 then
         Talismans.spawnTalismans(player)
