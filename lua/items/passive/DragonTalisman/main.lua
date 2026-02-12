@@ -1,60 +1,67 @@
 local game = Game()
 
 local DRAGON = {
-    DMG_MULT = 2, 
-    SCALE = 1.3,
     BASE_CHANCE = 15,
-    MAX_LUCK = 6
+    MAX_LUCK = 6,
+    FIRE_DMG_MULT = 1.5,
+    FIRE_SCALE = 1.2,
+    EXPLOSION_DAMAGE = 40,
+    BURN_COLOR = Color(1, 0.5, 0, 1, 0.3, 0, 0)
 }
 
+function Talismans:DragonOnUpdate(player)
+    if not player:HasCollectible(Talismans.Enums.CollectibleType.COLLECTIBLE_DRAGON) then
+        return
+    end
 
---when passive effects should update
-function Talismans:DragononUpdate(player)
-    if player:HasCollectible(Talismans.Enums.CollectibleType.COLLECTIBLE_DRAGON) then 
-        for _, entity in pairs(Isaac.GetRoomEntities()) do 
-            if entity.Type == EntityType.ENTITY_TEAR then 
-                local TearData = entity:GetData()
-                local Tear = entity:ToTear()
-                if TearData.DragonType == nil then
-                    --Initialize tear
-                    local roll = math.random(100)
-                    
-                    if roll <= ((100 - DRAGON.BASE_CHANCE) * player.Luck / DRAGON.MAX_LUCK) + DRAGON.BASE_CHANCE then
-                        --DRAGON tear
-                        TearData.DragonType = math.random(3)
-                        if TearData.DragonType == 1 then
-                            -- Death's touch
-                            Tear:ChangeVariant(TearVariant.FIST)
-                            Tear.TearFlags = TearFlags.TEAR_LASER
-                            Tear.CollisionDamage = Tear.CollisionDamage * DRAGON.DMG_MULT
-                            Tear:SetSize(Tear.Size * DRAGON.SCALE, Vector(1,1), 8)
-                            Tear.SpriteScale = Tear.SpriteScale * DRAGON.SCALE
-                        elseif TearData.DragonType == 2 then
-                            -- Holy Light
-                            Tear.TearFlags = TearFlags.TEAR_LIGHT_FROM_HEAVEN
-                        elseif TearData.DragonType == 3 then
-                            -- Gamorrah
-                            Tear:ChangeVariant(TearVariant.NAIL)
-                        end
-                    else
-                        -- Normal Tear
-                        TearData.DragonType = 0
-                    end
+    for _, entity in pairs(Isaac.GetRoomEntities()) do
+        if entity.Type == EntityType.ENTITY_TEAR then
+            local tear = entity:ToTear()
+            local data = tear:GetData()
+
+            if data.DragonFireball == nil then
+                local roll = math.random(100)
+                local chance = ((100 - DRAGON.BASE_CHANCE) * player.Luck / DRAGON.MAX_LUCK) + DRAGON.BASE_CHANCE
+
+                if roll <= chance then
+                    data.DragonFireball = true
+                    tear:ChangeVariant(TearVariant.FIRE)
+                    tear.TearFlags = tear.TearFlags | TearFlags.TEAR_BURN
+                    tear.CollisionDamage = tear.CollisionDamage * DRAGON.FIRE_DMG_MULT
+                    tear:SetSize(tear.Size * DRAGON.FIRE_SCALE, Vector(1, 1), 8)
+                    tear.SpriteScale = tear.SpriteScale * DRAGON.FIRE_SCALE
+                    tear.Color = DRAGON.BURN_COLOR
                 else
-                    if TearData.DragonType == 3 and Tear:CollidesWithGrid() then 
-                        local room = game:GetRoom()
-                        local Grid = room:GetGridEntityFromPos(Tear.Position)
-                        if Grid ~= nil then
-                            Grid:Destroy(false)
-                        else 
-                            Isaac.DebugString("Invalid Grid Entity to destroy!")
-                        end
-                    end
+                    data.DragonFireball = false
+                end
+            end
+
+            if data.DragonFireball and not data.DragonExploded then
+                -- Explode on grid collision (obstacles/walls)
+                if tear:CollidesWithGrid() then
+                    data.DragonExploded = true
+                    Isaac.Explode(tear.Position, tear.SpawnerEntity, DRAGON.EXPLOSION_DAMAGE)
+                    tear:Remove()
+                -- Explode when tear dies (range expired, etc.)
+                elseif tear:IsDead() then
+                    data.DragonExploded = true
+                    Isaac.Explode(tear.Position, tear.SpawnerEntity, DRAGON.EXPLOSION_DAMAGE)
                 end
             end
         end
     end
 end
 
-Talismans:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, Talismans.DragononUpdate)
+Talismans:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, Talismans.DragonOnUpdate)
+
+-- Explode on entity collision
+function Talismans:DragonTearCollision(tear, collider, low)
+    local data = tear:GetData()
+    if data.DragonFireball and not data.DragonExploded then
+        data.DragonExploded = true
+        Isaac.Explode(tear.Position, tear.SpawnerEntity, DRAGON.EXPLOSION_DAMAGE)
+    end
+end
+
+Talismans:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, Talismans.DragonTearCollision)
 
